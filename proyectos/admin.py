@@ -9,19 +9,8 @@ from .models import (
     Avance
 )
 
-class ProyectoAdmin(admin.ModelAdmin):
-    search_fields = ['titulo', 'consecutivo']
-    list_display = ('consecutivo', 'titulo', 'epidemiologo', 'fecha_inicio', 'activo')
-    list_filter = ('activo', 'grupos_investigacion', 'foco_estrategico')
-    filter_horizontal = (
-        'grupos_investigacion', 
-        'programas_postgrado', 
-        'programas_pregrado',
-        'asesores', 
-        'jurados'
-    )
-
-admin.site.register(Proyecto, ProyectoAdmin)
+# Configuración simple para evitar errores
+admin.site.register(Proyecto)
 admin.site.register(GrupoInvestigacion)
 admin.site.register(FocoEstrategico)
 admin.site.register(ProgramaAcademico)
