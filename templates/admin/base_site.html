@@ -1,0 +1,93 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | FunSanitasResearch Environment{% endblock %}
+
+{% block branding %}
+<h1 id="site-name" style="color: #ffffff; margin: 0; padding: 10px;">
+    <a href="{% url 'admin:index' %}" style="color: #ffffff; text-decoration: none;">
+        FunSanitasResearch Environment
+    </a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Colores institucionales de Unisanitas */
+    :root {
+        --unisanitas-blue: #0066cc;
+        --unisanitas-green: #6cb23e;
+        --dark-blue: #004499;
+    }
+    
+    /* Header principal */
+    #header {
+        background: linear-gradient(135deg, var(--unisanitas-blue) 0%, var(--dark-blue) 100%) !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+        background: var(--unisanitas-green) !important;
+        color: white;
+    }
+    
+    .breadcrumbs a {
+        color: white !important;
+    }
+    
+    /* Enlaces del menú */
+    #header a:link, #header a:visited {
+        color: #ffffff !important;
+    }
+    
+    /* Botones principales */
+    .button, input[type=submit], input[type=button], .submit-row input, button {
+        background: var(--unisanitas-blue) !important;
+        border: none !important;
+    }
+    
+    .button:hover, input[type=submit]:hover, input[type=button]:hover {
+        background: var(--dark-blue) !important;
+    }
+    
+    /* Enlaces importantes */
+    a:link, a:visited {
+        color: var(--unisanitas-blue) !important;
+    }
+    
+    a:hover {
+        color: var(--dark-blue) !important;
+    }
+    
+    /* Secciones del admin */
+    .module h2, .module caption, .inline-group h2 {
+        background: var(--unisanitas-blue) !important;
+        color: white !important;
+    }
+    
+    /* Títulos de sección */
+    h1, h2, h3 {
+        color: var(--dark-blue) !important;
+    }
+    
+    /* Footer personalizado */
+    #footer {
+        background: var(--unisanitas-green);
+        color: white;
+        text-align: center;
+        padding: 10px;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block footer %}
+<div id="footer">
+    <p style="margin: 0;">
+        <strong>FunSanitasResearch Environment</strong> | 
+        Sistema de Gestión de Investigación I+D+i | 
+        © {{ current_year|default:"2025" }} Fundación Universitaria Sanitas
+    </p>
+</div>
+{% endblock %}

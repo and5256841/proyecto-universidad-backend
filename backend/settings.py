@@ -96,3 +96,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom user model
 AUTH_USER_MODEL = 'usuarios.Usuario'
+# Personalización del Admin de Django
+ADMIN_SITE_HEADER = "FunSanitasResearch Environment"
+ADMIN_SITE_TITLE = "FunSanitas Admin"
+ADMIN_INDEX_TITLE = "Panel de Control de Investigación"
