@@ -9,7 +9,9 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Security settings
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-8hc-d+u$4m)arpm+wp*)h=&l^ow3mb3vu@uo4q=!o74r-@8gjz')
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY no está configurada en las variables de entorno")
 DEBUG = True  # Temporal para desarrollo
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',') if os.environ.get('ALLOWED_HOSTS') else []
 
