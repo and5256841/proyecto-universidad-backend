@@ -1,0 +1,203 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Dashboard de Investigación - {{ site_title|default:"Django" }}{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">📊 Dashboard de Investigación</a>
+    </h1>
+{% endblock %}
+
+{% block content %}
+<div style="padding: 20px;">
+    <h1>📊 Dashboard de Proyectos de Investigación</h1>
+    
+    <!-- Estadísticas Principales -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="color: #007cba; margin: 0;">Total Proyectos</h3>
+            <div style="font-size: 2em; font-weight: bold; margin: 10px 0;">{{ total_proyectos }}</div>
+        </div>
+        
+        <div style="background: #e7f3ff; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="color: #0066cc; margin: 0;">Proyectos Activos</h3>
+            <div style="font-size: 2em; font-weight: bold; margin: 10px 0; color: #28a745;">{{ proyectos_activos }}</div>
+        </div>
+        
+        <div style="background: #fff3cd; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="color: #856404; margin: 0;">Proyectos Estratégicos</h3>
+            <div style="font-size: 2em; font-weight: bold; margin: 10px 0; color: #ffc107;">{{ proyectos_estrategicos }}</div>
+        </div>
+        
+        <div style="background: #d1ecf1; padding: 20px; border-radius: 8px; text-align: center;">
+            <h3 style="color: #0c5460; margin: 0;">Proyectos Completados</h3>
+            <div style="font-size: 2em; font-weight: bold; margin: 10px 0; color: #17a2b8;">{{ proyectos_completados }}</div>
+        </div>
+    </div>
+
+    <!-- Progreso Promedio -->
+    <div style="background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h2>📈 Progreso Promedio de Proyectos</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+            <div>
+                <strong>Construcción:</strong>
+                <div style="background: #e9ecef; border-radius: 10px; height: 20px; margin: 5px 0;">
+                    <div style="background: #007bff; height: 20px; border-radius: 10px; width: {{ avg_construccion }}%;"></div>
+                </div>
+                <small>{{ avg_construccion }}%</small>
+            </div>
+            <div>
+                <strong>Recolección:</strong>
+                <div style="background: #e9ecef; border-radius: 10px; height: 20px; margin: 5px 0;">
+                    <div style="background: #28a745; height: 20px; border-radius: 10px; width: {{ avg_recoleccion }}%;"></div>
+                </div>
+                <small>{{ avg_recoleccion }}%</small>
+            </div>
+            <div>
+                <strong>Análisis:</strong>
+                <div style="background: #e9ecef; border-radius: 10px; height: 20px; margin: 5px 0;">
+                    <div style="background: #ffc107; height: 20px; border-radius: 10px; width: {{ avg_analisis }}%;"></div>
+                </div>
+                <small>{{ avg_analisis }}%</small>
+            </div>
+            <div>
+                <strong>Documento Final:</strong>
+                <div style="background: #e9ecef; border-radius: 10px; height: 20px; margin: 5px 0;">
+                    <div style="background: #fd7e14; height: 20px; border-radius: 10px; width: {{ avg_documento }}%;"></div>
+                </div>
+                <small>{{ avg_documento }}%</small>
+            </div>
+            <div>
+                <strong>Publicación:</strong>
+                <div style="background: #e9ecef; border-radius: 10px; height: 20px; margin: 5px 0;">
+                    <div style="background: #dc3545; height: 20px; border-radius: 10px; width: {{ avg_publicacion }}%;"></div>
+                </div>
+                <small>{{ avg_publicacion }}%</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px;">
+        <!-- Gráfico de Grupos -->
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h3>👥 Top Grupos de Investigación</h3>
+            <canvas id="gruposChart" width="400" height="300"></canvas>
+        </div>
+        
+        <!-- Gráfico de Focos -->
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h3>🎯 Focos Estratégicos</h3>
+            <canvas id="focosChart" width="400" height="300"></canvas>
+        </div>
+    </div>
+
+    <!-- Gráfico de Evolución Temporal -->
+    <div style="background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>📅 Proyectos por Año de Inicio</h3>
+        <canvas id="evolutionChart" width="800" height="300"></canvas>
+    </div>
+
+    <!-- Estados de Proyectos -->
+    <div style="background: white; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🔄 Estados de Proyectos</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div style="text-align: center; padding: 15px; background: #fff3cd; border-radius: 5px;">
+                <div style="font-size: 1.5em; font-weight: bold;">{{ proyectos_iniciando }}</div>
+                <div>🚀 Iniciando</div>
+                <small>(Construcción ≤ 25%)</small>
+            </div>
+            <div style="text-align: center; padding: 15px; background: #d1ecf1; border-radius: 5px;">
+                <div style="font-size: 1.5em; font-weight: bold;">{{ proyectos_desarrollo }}</div>
+                <div>⚙️ En Desarrollo</div>
+                <small>(Análisis ≤ 50%)</small>
+            </div>
+            <div style="text-align: center; padding: 15px; background: #d4edda; border-radius: 5px;">
+                <div style="font-size: 1.5em; font-weight: bold;">{{ proyectos_finalizando }}</div>
+                <div>🏁 Finalizando</div>
+                <small>(Publicación < 100%)</small>
+            </div>
+            <div style="text-align: center; padding: 15px; background: #e2e3e5; border-radius: 5px;">
+                <div style="font-size: 1.5em; font-weight: bold;">{{ proyectos_completados }}</div>
+                <div>✅ Completados</div>
+                <small>(Publicación = 100%)</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Gráfico de Grupos de Investigación
+const gruposCtx = document.getElementById('gruposChart').getContext('2d');
+const gruposChart = new Chart(gruposCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ grupos_nombres_json|safe }},
+        datasets: [{
+            label: 'Número de Proyectos',
+            data: {{ grupos_cantidades_json|safe }},
+            backgroundColor: [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                '#FF9F40', '#FF6384', '#C9CBCF', '#4BC0C0', '#FF6384'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Gráfico de Focos Estratégicos (Pie)
+const focosCtx = document.getElementById('focosChart').getContext('2d');
+const focosChart = new Chart(focosCtx, {
+    type: 'pie',
+    data: {
+        labels: {{ focos_nombres_json|safe }},
+        datasets: [{
+            data: {{ focos_cantidades_json|safe }},
+            backgroundColor: [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                '#FF9F40', '#FF6384', '#C9CBCF'
+            ]
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
+
+// Gráfico de Evolución por Años
+const evolutionCtx = document.getElementById('evolutionChart').getContext('2d');
+const evolutionChart = new Chart(evolutionCtx, {
+    type: 'line',
+    data: {
+        labels: {{ anos_json|safe }},
+        datasets: [{
+            label: 'Proyectos Iniciados',
+            data: {{ cantidades_por_ano_json|safe }},
+            borderColor: '#36A2EB',
+            backgroundColor: '#36A2EB20',
+            tension: 0.1
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+{% endblock %}

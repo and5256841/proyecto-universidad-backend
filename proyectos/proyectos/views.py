@@ -40,17 +40,30 @@ def dashboard_view(request):
         ano = proyecto.fecha_inicio.year
         proyectos_por_ano[ano] = proyectos_por_ano.get(ano, 0) + 1
     
-    # Proyectos por estado de progreso
-    proyectos_iniciando = Proyecto.objects.filter(progreso_construccion__lte=25).count()
-    proyectos_desarrollo = Proyecto.objects.filter(progreso_construccion__gt=25, progreso_analisis__lte=50).count()
-    proyectos_finalizando = Proyecto.objects.filter(progreso_analisis__gt=50, progreso_publicacion__lt=100).count()
-    proyectos_completados = Proyecto.objects.filter(progreso_publicacion=100).count()
+    # Proyectos por estado de progreso (categorizados)
+    proyectos_iniciando = Proyecto.objects.filter(
+        progreso_construccion__lte=25
+    ).count()
+    
+    proyectos_desarrollo = Proyecto.objects.filter(
+        progreso_construccion__gt=25,
+        progreso_analisis__lte=50
+    ).count()
+    
+    proyectos_finalizando = Proyecto.objects.filter(
+        progreso_analisis__gt=50,
+        progreso_publicacion__lt=100
+    ).count()
+    
+    proyectos_completados = Proyecto.objects.filter(
+        progreso_publicacion=100
+    ).count()
     
     # Proyectos estratégicos vs normales
     proyectos_estrategicos = Proyecto.objects.filter(es_proyecto_estrategico=True).count()
     proyectos_normales = total_proyectos - proyectos_estrategicos
     
-    # Preparar datos para gráficos
+    # Preparar datos para gráficos (JSON)
     grupos_nombres = [item['grupos_investigacion__nombre'] for item in grupos_stats if item['grupos_investigacion__nombre']]
     grupos_cantidades = [item['count'] for item in grupos_stats if item['grupos_investigacion__nombre']]
     
@@ -61,26 +74,35 @@ def dashboard_view(request):
     cantidades_por_ano = [proyectos_por_ano[ano] for ano in anos_ordenados]
     
     context = {
+        # Estadísticas generales
         'total_proyectos': total_proyectos,
         'proyectos_activos': proyectos_activos,
         'proyectos_inactivos': proyectos_inactivos,
         'proyectos_estrategicos': proyectos_estrategicos,
         'proyectos_normales': proyectos_normales,
+        
+        # Promedios de progreso
         'avg_construccion': round(avg_construccion, 1),
         'avg_recoleccion': round(avg_recoleccion, 1),
         'avg_analisis': round(avg_analisis, 1),
         'avg_documento': round(avg_documento, 1),
         'avg_publicacion': round(avg_publicacion, 1),
+        
+        # Estados de proyectos
         'proyectos_iniciando': proyectos_iniciando,
         'proyectos_desarrollo': proyectos_desarrollo,
         'proyectos_finalizando': proyectos_finalizando,
         'proyectos_completados': proyectos_completados,
+        
+        # Datos para gráficos (JSON)
         'grupos_nombres_json': json.dumps(grupos_nombres),
         'grupos_cantidades_json': json.dumps(grupos_cantidades),
         'focos_nombres_json': json.dumps(focos_nombres),
         'focos_cantidades_json': json.dumps(focos_cantidades),
         'anos_json': json.dumps(anos_ordenados),
         'cantidades_por_ano_json': json.dumps(cantidades_por_ano),
+        
+        # Listas para mostrar en tablas
         'grupos_stats': grupos_stats,
         'focos_stats': focos_stats,
     }
